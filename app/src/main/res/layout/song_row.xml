@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="80dp"
+                  android:orientation="horizontal"
+                  android:weightSum="10"
+    >
+
+        <ImageView android:layout_width="0dp" android:layout_height="match_parent"
+                   android:layout_weight="2"
+                   android:id="@+id/imgCoverSongRow"
+                   android:src="@drawable/disc1"
+        />
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                      android:layout_weight="8"
+                      android:weightSum="2"
+                      android:orientation="vertical"
+                      android:layout_marginLeft="10dp"
+        >
+
+            <TextView android:layout_width="match_parent" android:layout_height="0dp"
+                      android:layout_weight="1"
+                      android:text="A sky full of star"
+                      android:gravity="bottom"
+                      android:id="@+id/txtTitleSongRow"
+                      android:textSize="20dp"
+                      android:textColor="@color/colorSongTitle"
+                      android:singleLine="true"
+            />
+
+            <TextView android:layout_width="match_parent" android:layout_height="0dp"
+                      android:layout_weight="1"
+                      android:text="Coldplay"
+                      android:id="@+id/txtArtistSongRow"
+                      android:textSize="18dp"
+                      android:textColor="@color/colorSongArtist"
+                      android:singleLine="true"
+            />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
