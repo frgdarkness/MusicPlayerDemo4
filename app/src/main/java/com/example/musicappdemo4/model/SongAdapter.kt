@@ -1,4 +1,4 @@
-package com.example.musicappdemo4.data
+package com.example.musicappdemo4.model
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicappdemo4.R
-import com.example.musicappdemo4.data.model.Song
 
 class SongAdapter(val listSong: ArrayList<Song>, listener: SongClick) : RecyclerView.Adapter<SongAdapter.ViewHolder>() {
 
-    val songClickListener:SongClick = listener
+    val songClickListener: SongClick = listener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_row,parent,false)
         return ViewHolder(view)

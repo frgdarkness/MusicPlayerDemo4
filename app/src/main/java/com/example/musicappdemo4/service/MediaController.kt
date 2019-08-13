@@ -8,10 +8,12 @@ import android.media.MediaPlayer
 import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
-import com.example.musicappdemo4.data.model.MyMedia
-import com.example.musicappdemo4.data.model.Song
+import com.example.musicappdemo4.model.App
+import com.example.musicappdemo4.model.MyMedia
+import com.example.musicappdemo4.model.Song
+import kotlin.concurrent.thread
 
-class MediaController(service: MusicService) : MediaPlayerListener{
+class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.OnCompletionListener{
 
     private val context:Context
     private val musicService: MusicService? = service
@@ -25,6 +27,7 @@ class MediaController(service: MusicService) : MediaPlayerListener{
     init {
         context = musicService?.applicationContext!!
         listSong.addAll(MyMedia(context).getListSong())
+        mediaPlayer.setOnCompletionListener(this)
         initMusicPlayer()
         registerReceiver()
         Log.d("DEMO123","init in MediaController")
@@ -35,7 +38,7 @@ class MediaController(service: MusicService) : MediaPlayerListener{
         mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
         mediaPlayer.setDataSource(listSong[0].path)
         mediaPlayer.prepare()
-        Log.d(MusicService.TAG,"init mediaPlayer, listsong: ${listSong.size} song")
+        Log.d(App.TAG,"init mediaPlayer, listsong: ${listSong.size} song")
     }
 
     override fun nextSong() {
@@ -81,6 +84,10 @@ class MediaController(service: MusicService) : MediaPlayerListener{
         return mediaPlayer.currentPosition
     }
 
+    override fun getSongCurrent():Song {
+        return listSong[posSongNow]
+    }
+
     fun playSong(){
         val song = listSong[posSongNow]
         mediaPlayer.stop()
@@ -94,34 +101,54 @@ class MediaController(service: MusicService) : MediaPlayerListener{
     }
 
     fun callUpdateSongInfo() {
-        val intent = Intent(MusicService.ACTION_UPDATE_INFO_SONG)
-        intent.putExtra(MusicService.SONG_VALUE,listSong[posSongNow])
+        val intent = Intent(App.ACTION_UPDATE_INFO_SONG)
+        intent.putExtra(App.SONG_VALUE,listSong[posSongNow])
         context.sendBroadcast(intent)
     }
 
     fun callUpdateStatusPlay(){
-        val intent = Intent(MusicService.ACTION_UPDATE_STATUS_PLAY)
-        intent.putExtra(MusicService.PLAY_STATUS,isPlaying())
+        val intent = Intent(App.ACTION_UPDATE_STATUS_PLAY)
+        intent.putExtra(App.PLAY_STATUS,isPlaying())
         Log.d("DEMO123","call update status: ${isPlaying()}")
         context.sendBroadcast(intent)
+    }
+
+    fun exit(){
+        musicService?.calcelNoti()
+        musicService?.stopService()
+        unregisterReceiver()
+        mediaPlayer.stop()
+        mediaPlayer.release()
+
+        Log.d("DEMO123","controller exit")
+    }
+
+    override fun onCompletion(p0: MediaPlayer?) {
+        nextSong()
     }
 
     fun registerReceiver(){
         notiReceiver = NotiReceiver()
         val filter = IntentFilter()
-        filter.addAction(MusicService.ACTION_PREV)
-        filter.addAction(MusicService.ACTION_PLAY)
-        filter.addAction(MusicService.ACTION_NEXT)
+        filter.addAction(App.ACTION_PREV)
+        filter.addAction(App.ACTION_PLAY)
+        filter.addAction(App.ACTION_NEXT)
+        filter.addAction(App.ACTION_EXIT)
         musicService?.registerReceiver(notiReceiver,filter)
+    }
+
+    fun unregisterReceiver(){
+        musicService?.unregisterReceiver(notiReceiver)
     }
 
     private inner class NotiReceiver : BroadcastReceiver(){
         override fun onReceive(p0: Context?, p1: Intent?) {
             Log.d("DEMO123","Controller receiver: action = ${p1?.action}")
             when(p1?.action){
-                MusicService.ACTION_PREV -> prevSong()
-                MusicService.ACTION_PLAY -> pauseSong()
-                MusicService.ACTION_NEXT -> nextSong()
+                App.ACTION_PREV -> prevSong()
+                App.ACTION_PLAY -> pauseSong()
+                App.ACTION_NEXT -> nextSong()
+                App.ACTION_EXIT -> exit()
             }
         }
 

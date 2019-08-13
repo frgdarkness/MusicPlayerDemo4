@@ -1,6 +1,6 @@
 package com.example.musicappdemo4.service
 
-import com.example.musicappdemo4.data.model.Song
+import com.example.musicappdemo4.model.Song
 
 interface MediaPlayerListener {
 
@@ -14,6 +14,7 @@ interface MediaPlayerListener {
 
     fun isPlaying():Boolean
 
+    fun getSongCurrent():Song
 
     fun seekTo(position: Int)
 

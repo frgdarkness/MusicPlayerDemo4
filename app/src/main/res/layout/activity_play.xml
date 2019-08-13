@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.ActivityPlay"
+        android:weightSum="10"
+        android:orientation="vertical"
+        android:background="@drawable/bg1"
+>
+
+    <ImageView android:layout_width="match_parent" android:layout_height="0dp"
+               android:layout_weight="5"
+               android:id="@+id/imgCoverActiPlay"
+               android:src="@drawable/disc1"
+               android:layout_marginTop="10dp"
+    />
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="0dp"
+                    android:layout_weight="1"
+    >
+
+        <SeekBar android:layout_width="match_parent" android:layout_height="wrap_content"
+                 android:id="@+id/sbSongActiPlay"
+                 android:layout_marginTop="10dp"
+        />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:id="@+id/txtCurrentTime"
+                  android:text="00:00"
+                  android:textSize="14dp"
+                  android:textColor="#fff"
+                  android:layout_marginLeft="10dp"
+                  android:layout_below="@id/sbSongActiPlay"
+        />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:id="@+id/txtTimeTotal"
+                  android:text="03:33"
+                  android:layout_marginRight="10dp"
+                  android:textColor="#fff"
+                  android:textSize="14dp"
+                  android:layout_below="@id/sbSongActiPlay"
+                  android:layout_alignParentRight="true"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="0dp"
+                    android:layout_weight="2"
+    >
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+        >
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="A sky full of star"
+                      android:textSize="28dp"
+                      android:textColor="#fff"
+                      android:textStyle="bold"
+                      android:id="@+id/txtTitleActiPlay"
+                      android:textAlignment="center"
+                      android:layout_centerHorizontal="true"
+            />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="Coldplay"
+                      android:textSize="22dp"
+                      android:textColor="#fff"
+                      android:layout_marginTop="10dp"
+                      android:id="@+id/txtArtistActiPlay"
+                      android:layout_centerHorizontal="true"
+                      android:textAlignment="center"
+                      android:layout_below="@id/txtTitleActiPlay"
+            />
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="0dp"
+                    android:layout_weight="2"
+    >
+
+        <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:src="@drawable/ic_play_2"
+                     android:layout_centerInParent="true"
+                     android:id="@+id/btnPlayActiPlay"
+                     android:background="@null"
+        />
+
+        <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:src="@drawable/ic_next_2"
+                     android:layout_centerVertical="true"
+                     android:layout_toRightOf="@id/btnPlayActiPlay"
+                     android:layout_marginLeft="40dp"
+                     android:id="@+id/btnNextActiPlay"
+                     android:background="@null"/>
+
+        <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:src="@drawable/ic_prev_2"
+                     android:layout_centerVertical="true"
+                     android:layout_toLeftOf="@id/btnPlayActiPlay"
+                     android:layout_marginRight="40dp"
+                     android:id="@+id/btnPrevActiPlay"
+                     android:background="@null"
+
+        />
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

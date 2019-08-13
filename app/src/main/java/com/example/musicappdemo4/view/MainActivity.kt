@@ -1,4 +1,4 @@
-package com.example.musicappdemo4
+package com.example.musicappdemo4.view
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -6,28 +6,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
-import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.musicappdemo4.data.SongAdapter
-import com.example.musicappdemo4.data.model.MyMedia
-import com.example.musicappdemo4.data.model.Song
+import com.example.musicappdemo4.R
+import com.example.musicappdemo4.model.App
+import com.example.musicappdemo4.model.SongAdapter
+import com.example.musicappdemo4.model.MyMedia
+import com.example.musicappdemo4.model.Song
 import com.example.musicappdemo4.presenter.MediaContract
 import com.example.musicappdemo4.presenter.MediaPresenter
 import com.example.musicappdemo4.service.MusicService
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.MainView {
 
@@ -37,7 +32,6 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
     var connection: ServiceConnection? = null
     var presenter: MediaContract.Presenter? = null
     var isBound = false
-    var posSongNow=0
     val myMedia = MyMedia(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +46,7 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
         }
 
         imgCoverMain.setOnClickListener{
-
+            startActivity(Intent(this,ActivityPlay::class.java))
         }
     }
 
@@ -77,11 +71,19 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
         startService(intentService)
     }
 
+    fun closeService(){
+        presenter?.stop()
+        unbindService(connection!!)
+        isBound = false
+        stopService(intentService)
+        Log.d(App.TAG,"unbinded and stopped Service")
+    }
+
     @SuppressLint("WrongConstant")
     fun initRecycleView(){
         val listSong = MyMedia(this).getListSong()
         recycleViewMain.layoutManager = LinearLayoutManager(this,LinearLayout.VERTICAL,false)
-        recycleViewMain.adapter = SongAdapter(listSong,this)
+        recycleViewMain.adapter = SongAdapter(listSong, this)
     }
 
     fun initCurrentSongView(song: Song){
@@ -96,7 +98,7 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
 //        initCurrentSongView(song)
 //        musicService?.createNoti(song,true)
         presenter?.onPickSongToPlay(index)
-        Log.d("DEMO123","song: $index")
+        Log.d(App.TAG,"song: $index")
     }
 
     override fun updateInfoSongNow(song: Song) {
@@ -106,6 +108,20 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
     override fun updateStatusPlay(icon:Int) {
         //val icon = if(isPlay){R.drawable.ic_play_main} else{R.drawable.ic_pause_main}
         btnPlayMain.setImageResource(icon)
+    }
+
+    override fun exitMain() {
+        closeService()
+        finish()
+        Log.d(App.TAG,"exitMain")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(isBound) unbindService(connection!!)
+        presenter?.unregisterReceiver(this)
+        Log.d(App.TAG,"onDestroyMain")
+
     }
 
     fun checkPermission(){
