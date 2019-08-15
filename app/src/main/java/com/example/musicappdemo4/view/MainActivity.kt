@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -19,35 +20,35 @@ import com.example.musicappdemo4.model.App
 import com.example.musicappdemo4.model.SongAdapter
 import com.example.musicappdemo4.model.MyMedia
 import com.example.musicappdemo4.model.Song
-import com.example.musicappdemo4.presenter.MediaContract
-import com.example.musicappdemo4.presenter.MediaPresenter
+import com.example.musicappdemo4.presenter.MainContract
+import com.example.musicappdemo4.presenter.MainPresenter
 import com.example.musicappdemo4.service.MusicService
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_play.*
 
-class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.MainView {
+class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MainContract.MainView, View.OnClickListener {
 
     private val MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123
     var intentService:Intent? = null
     var musicService: MusicService? = null
     var connection: ServiceConnection? = null
-    var presenter: MediaContract.Presenter? = null
+    var presenter: MainContract.Presenter? = null
     var isBound = false
     val myMedia = MyMedia(this)
+    var isPlay = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         checkPermission()
-        presenter = MediaPresenter(this)
+        presenter = MainPresenter(this)
         presenter?.registerReceiver(this)
         connectService()
-        btnPlayMain.setOnClickListener{
-            presenter?.onPauseSong()
-        }
+        btnPlayMain.setOnClickListener(this)
+        imgCoverMain.setOnClickListener(this)
+        txtTitleMain.setOnClickListener(this)
+        txtArtistMain.setOnClickListener(this)
 
-        imgCoverMain.setOnClickListener{
-            startActivity(Intent(this,ActivityPlay::class.java))
-        }
     }
 
     fun connectService(){
@@ -91,12 +92,16 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
         txtArtistMain.text = song.artist
         txtTitleMain.text = song.title
         btnPlayMain.setImageResource(R.drawable.ic_pause_main)
+        if(isPlay==false)
+            isPlay = true
+    }
+
+    fun openActivityPlay(){
+        if(isPlay)
+            startActivity(Intent(this,ActivityPlay::class.java))
     }
 
     override fun onSongClick(index:Int) {
-        //Toast.makeText(this,"song = $song",Toast.LENGTH_LONG).show()
-//        initCurrentSongView(song)
-//        musicService?.createNoti(song,true)
         presenter?.onPickSongToPlay(index)
         Log.d(App.TAG,"song: $index")
     }
@@ -106,8 +111,17 @@ class MainActivity : AppCompatActivity(), SongAdapter.SongClick, MediaContract.M
     }
 
     override fun updateStatusPlay(icon:Int) {
-        //val icon = if(isPlay){R.drawable.ic_play_main} else{R.drawable.ic_pause_main}
         btnPlayMain.setImageResource(icon)
+    }
+
+    override fun onClick(p0: View?) {
+        when(p0){
+            btnPlayMain -> presenter?.onPauseSong()
+            else -> {
+                if(isPlay)
+                    startActivity(Intent(this,ActivityPlay::class.java))
+            }
+        }
     }
 
     override fun exitMain() {

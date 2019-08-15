@@ -14,18 +14,18 @@ import com.example.musicappdemo4.R
 import com.example.musicappdemo4.model.App
 import com.example.musicappdemo4.model.MyMedia
 import com.example.musicappdemo4.model.Song
-import com.example.musicappdemo4.presenter.MediaContract
-import com.example.musicappdemo4.presenter.MediaPresenter
+import com.example.musicappdemo4.presenter.MainContract
+import com.example.musicappdemo4.presenter.MainPresenter
 import com.example.musicappdemo4.service.MusicService
 import kotlinx.android.synthetic.main.activity_play.*
 import java.text.SimpleDateFormat
 
-class ActivityPlay : AppCompatActivity(), MediaContract.PlayView, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+class ActivityPlay : AppCompatActivity(), MainContract.PlayView, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     var intentService: Intent? = null
     var musicService: MusicService? = null
     var connection: ServiceConnection? = null
-    var presenter: MediaContract.Presenter? = null
+    var presenter: MainContract.Presenter? = null
     var isBound = false
     var progessSeekBar = 0
     var timeFormat = SimpleDateFormat("mm:ss")
@@ -33,7 +33,7 @@ class ActivityPlay : AppCompatActivity(), MediaContract.PlayView, View.OnClickLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
-        presenter = MediaPresenter(this)
+        presenter = MainPresenter(this)
         presenter?.registerReceiver(this)
         bindService()
         btnPlayActiPlay.setOnClickListener(this)
@@ -62,7 +62,6 @@ class ActivityPlay : AppCompatActivity(), MediaContract.PlayView, View.OnClickLi
             }
         }
         bindService(intentService,connection!!, Context.BIND_AUTO_CREATE)
-        //startService(intentService)
     }
 
     fun unbindService(){
@@ -94,7 +93,6 @@ class ActivityPlay : AppCompatActivity(), MediaContract.PlayView, View.OnClickLi
     }
 
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-        //Log.d(App.TAG,"onProgressChanged: p0=$p0 / p1=$p1 / p2=$p2")
         progessSeekBar = p1
     }
 
@@ -103,10 +101,6 @@ class ActivityPlay : AppCompatActivity(), MediaContract.PlayView, View.OnClickLi
     }
 
     override fun onStopTrackingTouch(p0: SeekBar?) {
-//        val temp = p0?.progress
-//        if (temp != null) {
-//            presenter?.onSeekTo(temp)
-//        }
         presenter?.onSeekTo(progessSeekBar)
     }
 

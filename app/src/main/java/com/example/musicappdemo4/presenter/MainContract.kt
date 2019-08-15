@@ -4,10 +4,10 @@ import android.content.Context
 import com.example.musicappdemo4.model.Song
 import com.example.musicappdemo4.service.MusicService
 
-interface MediaContract {
+interface MainContract {
     interface MainView{
         fun updateInfoSongNow(song: Song)
-        //fun updateStatusPlay(isPlay: Boolean)
+
         fun updateStatusPlay(icon:Int)
 
         fun exitMain()

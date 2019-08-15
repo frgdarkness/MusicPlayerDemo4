@@ -44,7 +44,7 @@
 
             <TextView android:layout_width="match_parent" android:layout_height="0dp"
                       android:layout_weight="1"
-                      android:text="A sky full of star"
+                      android:text=""
                       android:gravity="bottom"
                       android:id="@+id/txtTitleMain"
                       android:textSize="18dp"
@@ -54,7 +54,7 @@
 
             <TextView android:layout_width="match_parent" android:layout_height="0dp"
                       android:layout_weight="1"
-                      android:text="Coldplay"
+                      android:text=""
                       android:id="@+id/txtArtistMain"
                       android:textSize="16dp"
                       android:singleLine="true"

@@ -22,15 +22,13 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
     private var notiReceiver: NotiReceiver? = null
     private var posSongNow = 0
 
-
-
     init {
         context = musicService?.applicationContext!!
         listSong.addAll(MyMedia(context).getListSong())
         mediaPlayer.setOnCompletionListener(this)
         initMusicPlayer()
         registerReceiver()
-        Log.d("DEMO123","init in MediaController")
+        Log.d(App.TAG,"init in MediaController")
     }
 
     fun initMusicPlayer(){
@@ -60,7 +58,7 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
     override fun playSongAtIndex(index: Int) {
         posSongNow = index
         playSong()
-        Toast.makeText(musicService,"play song at $index",Toast.LENGTH_LONG).show()
+        //Toast.makeText(musicService,"play song at $index",Toast.LENGTH_LONG).show()
     }
 
     override fun isPlaying(): Boolean {
@@ -97,7 +95,7 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
         mediaPlayer.start()
         musicService?.createNoti(song,true)
         callUpdateSongInfo()
-        Log.d("DEMO123","playsongat : $posSongNow")
+        Log.d(App.TAG,"playsongat : $posSongNow")
     }
 
     fun callUpdateSongInfo() {
@@ -109,7 +107,7 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
     fun callUpdateStatusPlay(){
         val intent = Intent(App.ACTION_UPDATE_STATUS_PLAY)
         intent.putExtra(App.PLAY_STATUS,isPlaying())
-        Log.d("DEMO123","call update status: ${isPlaying()}")
+        Log.d(App.TAG,"call update status: ${isPlaying()}")
         context.sendBroadcast(intent)
     }
 
@@ -119,8 +117,7 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
         unregisterReceiver()
         mediaPlayer.stop()
         mediaPlayer.release()
-
-        Log.d("DEMO123","controller exit")
+        Log.d(App.TAG,"controller exit")
     }
 
     override fun onCompletion(p0: MediaPlayer?) {
@@ -143,7 +140,7 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
 
     private inner class NotiReceiver : BroadcastReceiver(){
         override fun onReceive(p0: Context?, p1: Intent?) {
-            Log.d("DEMO123","Controller receiver: action = ${p1?.action}")
+            Log.d(App.TAG,"Controller receiver: action = ${p1?.action}")
             when(p1?.action){
                 App.ACTION_PREV -> prevSong()
                 App.ACTION_PLAY -> pauseSong()
@@ -151,7 +148,6 @@ class MediaController(service: MusicService) : MediaPlayerListener, MediaPlayer.
                 App.ACTION_EXIT -> exit()
             }
         }
-
     }
 
 }

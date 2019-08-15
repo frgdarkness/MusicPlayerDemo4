@@ -19,27 +19,13 @@ import com.example.musicappdemo4.model.Song
 
 class MusicService : Service(){
 
-    companion object{
-//        val TAG = "DEMO123"
-//        val CHANNEL_ID = "Channel Music"
-//        val NOTI_ID = 167
-//        val ACTION_NEXT = "media.next"
-//        val ACTION_PLAY = "media.play"
-//        val ACTION_PREV = "media.previos"
-//        val ACTION_EXIT = "media.exit"
-//        val ACTION_UPDATE_INFO_SONG = "media.update.song"
-//        val SONG_VALUE = "media.song"
-//        val ACTION_UPDATE_STATUS_PLAY = "media.update.status"
-//        val PLAY_STATUS = "media.status"
-    }
-
     private val mBinder = MusicServiceBinder()
     private val myMedia = MyMedia(this)
 
     private var mediaController: MediaController? = null
     private var notiManager: NotificationManager? = null
     private var mediaSession: MediaSessionCompat? = null
-    private var musicPlayer: MediaPlayer? = null
+
     val handler = Handler()
     var runnable:Runnable? = null
 
@@ -49,7 +35,6 @@ class MusicService : Service(){
 
     override fun onBind(p0: Intent?): IBinder? {
         return mBinder
-        Log.d(App.TAG,"onBind")
     }
 
     override fun onCreate() {
@@ -57,17 +42,14 @@ class MusicService : Service(){
         mediaController = MediaController(this)
         mediaSession = MediaSessionCompat(this,"MusicPLayer")
         notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-//        startThread()
-//        registerReceiver()
         createNotiChannel()
         Log.d(App.TAG,"onCreate")
     }
 
     override fun onDestroy() {
         if(runnable !=null)
-            handler.removeCallbacks(runnable)
+            handler.removeCallbacks(runnable!!)
         super.onDestroy()
-
         Log.d(App.TAG,"Service destroyed")
     }
 
@@ -79,7 +61,7 @@ class MusicService : Service(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Channel Notification"
             val descriptionText = "Notification for MusicPlayer"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(App.CHANNEL_ID, name, importance)
             channel.apply {
                 description = descriptionText
@@ -109,7 +91,7 @@ class MusicService : Service(){
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0, 1, 2)
                 .setMediaSession(mediaSession?.sessionToken))
-            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_LOW)
+            //.setPriority(androidx.core.app.NotificationCompat.PRIORITY_LOW)
             .setContentIntent(pendingMain)
             .build()
         startForeground(App.NOTI_ID,noti)
@@ -133,29 +115,6 @@ class MusicService : Service(){
         stopSelf()
     }
 
-//    fun startThread(){
-//        Log.d(App.TAG,"service on active")
-//        runnable = Runnable {
-//            startThread()
-//        }
-//        handler.postDelayed(runnable,1000)
-//
-//    }
-
     fun getMediaController() = mediaController
 
-//    fun registerReceiver(){
-//        val filter = IntentFilter()
-//        filter.addAction(ACTION_PREV)
-//        filter.addAction(ACTION_PLAY)
-//        filter.addAction(ACTION_NEXT)
-//        registerReceiver(receiver,filter)
-//    }
-//
-//    val receiver = object : BroadcastReceiver(){
-//        override fun onReceive(p0: Context?, p1: Intent?) {
-//            Log.d(TAG,"Receiver Service: ${p1?.action}")
-//        }
-//
-//    }
 }
